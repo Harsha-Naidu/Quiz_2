@@ -3,8 +3,13 @@
  <hr style="border:  solid black;">
 <h4><%= @idea.title%></h4>
 
+<br>
 <div>
-    <%= link_to("Edit", edit_idea_path(@idea.id), class:"btn btn-outline-primary")%>  
-    <%= link_to("Delete",idea_path(@idea.id),method: :delete,data:{confirm: "Are you sure you want to delete ?"}, class:"btn btn-outline-primary") %>
-  
+    <% if can? :crud, @idea %>
+        <%= link_to("Edit", edit_idea_path(@idea.id), class:"btn btn-outline-primary")%> 
+    <% end %> 
+
+    <% if can? :crud, @idea %>
+        <%= link_to("Delete",idea_path(@idea.id),method: :delete,data:{confirm: "Are you sure you want to delete ?"}, class:"btn btn-outline-primary") %>
+    <% end %>
 </div>
