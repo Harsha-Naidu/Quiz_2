@@ -147,16 +147,17 @@ describe "# edit" do# 👈🏻 describe 'edit' starts here
 
             context "with valid parameters" do
                 it "update the idea record with new attributes" do
-                
+                    
                     #when
                     new_title = "#{@idea.title} plus some changes!"
                     patch(:update, params:{id: @idea.id, idea:{title: new_title}})
+                    
                     #then
                     expect(@idea.reload.title).to(eq(new_title))
                 end
 
                 it 'redirect to the index page' do
-                    new_title = "#{@idea.title} some changes!!!"
+                    new_title = "#{@idea.title} plus some changes!"
                     patch(:update, params:{id: @idea.id, idea:{title: new_title}})
                     expect(response).to redirect_to(root_path)
 

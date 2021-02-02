@@ -45,5 +45,14 @@ class Ability
       user==review.user
     end
 
+    can(:like, Review) do |review|
+      user.persisted? && review.user != user
+      # user.persisted? check if user is saved in a db or not
+      # review.user != user . Do not allow a user to like his/her own review
+    end
+
+    can(:destroy, Like) do |like|
+      like.user == user
+    end
   end
 end
