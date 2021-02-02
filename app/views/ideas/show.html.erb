@@ -3,8 +3,63 @@
  <hr style="border:  solid black;">
 <h4><%= @idea.title%></h4>
 
+<br>
 <div>
-    <%= link_to("Edit", edit_idea_path(@idea.id), class:"btn btn-outline-primary")%>  
-    <%= link_to("Delete",idea_path(@idea.id),method: :delete,data:{confirm: "Are you sure you want to delete ?"}, class:"btn btn-outline-primary") %>
-  
+    <% if can? :crud, @idea %>
+        <%= link_to("Edit", edit_idea_path(@idea.id), class:"btn btn-outline-primary")%> 
+    <% end %> 
+
+    <% if can? :crud, @idea %>
+        <%= link_to("Delete",idea_path(@idea.id),method: :delete,data:{confirm: "Are you sure you want to delete ?"}, class:"btn btn-outline-primary") %>
+    <% end %>
 </div>
+
+<br>
+<h5>Review</h3>
+
+<%= form_with model:[@idea, @review], local:true do |f| %>
+
+<ul>
+<% if @review.errors.full_messages.each do |msg|%>
+
+    <li>
+        <%= msg %>
+    </li>
+<% end %>
+<% end %>
+</ul>
+
+  <%= f.text_area :body, cols:30 ,rows:2,class:"form-control", placeholder:"What's on your mind?" %>
+<br>
+  <%= f.submit "Submit", class:"btn btn-outline-primary" %>
+<% end %>
+<br>
+
+<% @reviews.each do |review|%>
+<p>
+<%= review.body %>
+
+<div>
+    <%=  link_to " By #{review.user&.name}"|| "DELETED" %>
+<span>
+    <% if can? :crud, review %>
+        <%= link_to "Delete",review_path(review), method: :delete,data: {confirm: "Are you sure?"} ,class:"btn btn-outline-dark" %>
+    <% end %>
+</span>
+
+<span>
+    <% if user_signed_in?  && can?(:like, review)%>
+        <% like = current_user.likes.find_by_review_id(review) %>
+            <% if like %>
+                <%= link_to 'like', like_path(like),method: :delete ,class:"btn btn-outline-dark" %> 
+            <% else %>  
+                <%= link_to 'liked', review_likes_path(review), method: :post ,class:"btn btn-outline-dark" %> 
+            <% end %>
+    <% end%> |
+     <%= "Likes: #{review.likes.count}" %>
+</span>
+</div>
+
+<hr style="border:  solid black;">
+</p>
+<% end %>
